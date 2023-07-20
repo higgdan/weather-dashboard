@@ -1,9 +1,11 @@
+// define references to HTML elements
 let searchCityInput = document.querySelector("#search-city-input");
 let searchCityButton = document.querySelector("#search-city-button");
 let searchHistory = document.querySelector("#search-history");
 let currentWeather = document.querySelector("#current-weather-container");
 let fiveDayForecast = document.querySelector("#forecast-container");
 
+// define global variables
 let weatherKey = "327ee92c9d8ab9ee1c3b847e7bac81e7"
 let forecastURL = "";
 let cityLat = "";
@@ -12,6 +14,7 @@ let currentCitySearch = "";
 let citySearchHistorySet = new Set();
 let citySearchHistoryArray = [];
 
+// checks if local storage exists on page load and updates search history
 let onload = function () {
     if (localStorage.getItem("WD-citySearchHistory") !== null) {
             citySearchHistoryArray = JSON.parse(localStorage.getItem("WD-citySearchHistory"));
@@ -20,6 +23,7 @@ let onload = function () {
     }
 }
 
+// clears HTML elements
 let clearWeatherEls = function() {
     searchCityInput.value = "";
     searchHistory.innerHTML = "";
@@ -27,6 +31,7 @@ let clearWeatherEls = function() {
     fiveDayForecast.innerHTML = "";
 } 
 
+// adding to a Set to eliminate duplicates before saving to local storage
 let addToSearchHistory = function() {
     citySearchHistorySet.add(currentCitySearch);
     citySearchHistoryArray = [...citySearchHistorySet]
@@ -43,6 +48,7 @@ let createCityButtons = function(buttons) {
     }
 }
 
+// get coordinates fro a searched city and pass them onto define weather API URLs function
 let getCityCoords = function() {
     let coordRequestURL = "http://api.openweathermap.org/geo/1.0/direct?q="+ currentCitySearch +"&limit=5&appid=" + weatherKey;
     fetch(coordRequestURL)
@@ -55,7 +61,7 @@ let getCityCoords = function() {
             defineWeatherURLS(cityLat,cityLong);
         });
 }
-
+// adds search parameters to API URLs and fires the relevant fetch function
 let defineWeatherURLS = function(a,b) {
         weatherURL = "http://api.openweathermap.org/data/2.5/weather?lat="+ a + "&lon=" + b +"&units=metric&appid=" + weatherKey
         forecastURL = "http://api.openweathermap.org/data/2.5/forecast?lat="+ a + "&lon=" + b +"&units=metric&appid=" + weatherKey
@@ -83,6 +89,7 @@ let getFiveDayForecast = function(apiURL) {
         });
 }
 
+// dynamically populates the current weather
 let constructCurrentWeather = function(data) {
     let cityNameEl = document.createElement("h2");
     cityNameEl.innerText = data.name;
@@ -107,6 +114,7 @@ let constructCurrentWeather = function(data) {
     currentWeather.appendChild(windEl);
 }
 
+// dynamically populates the five-day forecast
 let constructFiveDayForecast = function(data) {
     for (let i = 1; i <= 5; i ++) {
         let index = ((i*8)-1);
@@ -134,22 +142,23 @@ let constructFiveDayForecast = function(data) {
     }
 }
 
+// event listeners for search button press, fires multiple functions to save, clear and then populate the page
 searchCityButton.addEventListener("click", function(event) {
     event.preventDefault()
     currentCitySearch = searchCityInput.value.toUpperCase()
-    console.log(currentCitySearch);
     addToSearchHistory();
     clearWeatherEls();
     createCityButtons(citySearchHistoryArray);
     getCityCoords();
 });
 
+// event listeners for search button press, fires multiple functions clear and then populate the page
 searchHistory.addEventListener("click", function(event) {
     currentCitySearch = event.target.innerText;
-    console.log(currentCitySearch);
     clearWeatherEls();
     createCityButtons(citySearchHistoryArray);
     getCityCoords();
 });
 
+// executes onload  function on application open
 onload();
