@@ -3,10 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="./assets/css/style.css"/>
 </head>
 <body>
-    
+    <H1>WEATHER DASHBOARD</H1>
+    <div id="content-container">
+        <div id="sidebar">
+            <form>
+                <h3>CITY SEARCH</h3>
+                <input id="search-city-input" type="text">
+                <button id="search-city-button">SEARCH</button>
+            </form>
+            <br>
+            <div id="search-history"></div>
+        </div>
+        <div id="all-weather-container">
+            <div id="current-weather-container"></div>
+
+            <div id="forecast-container"></div>
+        </div>
+    <div>
     <script src="./assets/js/script.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+      integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="
+      crossorigin="anonymous"
+    ></script>
 </body>
 </html>
