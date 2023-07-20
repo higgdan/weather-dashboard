@@ -1,9 +1,47 @@
+let searchCityInput = document.querySelector("#search-city-input");
+let searchCityButton = document.querySelector("#search-city-button");
+let searchHistory = document.querySelector("#search-history");
+let currentWeather = document.querySelector("#current-weather-container");
+let fiveDayForecast = document.querySelector("#forecast-container");
+
 let weatherKey = "327ee92c9d8ab9ee1c3b847e7bac81e7"
-
 let forecastURL = "";
-let cityLat = ""; // -37.8142176
-let cityLong = ""; // 144.9631608
+let cityLat = "";
+let cityLong = "";
+let currentCitySearch = "";
+let citySearchHistorySet = new Set();
+let citySearchHistoryArray = [];
 
+let onload = function () {
+    if (localStorage.getItem("WD-citySearchHistory") !== null) {
+            citySearchHistoryArray = JSON.parse(localStorage.getItem("WD-citySearchHistory"));
+            citySearchHistorySet = new Set(citySearchHistoryArray);
+            createCityButtons(citySearchHistoryArray);
+    }
+}
+
+let clearWeatherEls = function() {
+    searchCityInput.value = "";
+    searchHistory.innerHTML = "";
+    currentWeather.innerHTML = "";
+    fiveDayForecast.innerHTML = "";
+} 
+
+let addToSearchHistory = function() {
+    citySearchHistorySet.add(currentCitySearch);
+    citySearchHistoryArray = [...citySearchHistorySet]
+    localStorage.setItem("WD-citySearchHistory", JSON.stringify(citySearchHistoryArray));
+}
+
+// function to insert a button for each city in search history
+let createCityButtons = function(buttons) {
+    for (let i = 0; i < buttons.length; i++) {
+        let insButton = document.createElement("button");
+            insButton.setAttribute("class", "city-button")
+            insButton.innerText = buttons[i];
+            searchHistory.appendChild(insButton);
+    }
+}
 
 let getCityCoords = function() {
     let coordRequestURL = "http://api.openweathermap.org/geo/1.0/direct?q="+ currentCitySearch +"&limit=5&appid=" + weatherKey;
@@ -95,3 +133,23 @@ let constructFiveDayForecast = function(data) {
         fiveDayForecast.appendChild(dayDiv);
     }
 }
+
+searchCityButton.addEventListener("click", function(event) {
+    event.preventDefault()
+    currentCitySearch = searchCityInput.value.toUpperCase()
+    console.log(currentCitySearch);
+    addToSearchHistory();
+    clearWeatherEls();
+    createCityButtons(citySearchHistoryArray);
+    getCityCoords();
+});
+
+searchHistory.addEventListener("click", function(event) {
+    currentCitySearch = event.target.innerText;
+    console.log(currentCitySearch);
+    clearWeatherEls();
+    createCityButtons(citySearchHistoryArray);
+    getCityCoords();
+});
+
+onload();
