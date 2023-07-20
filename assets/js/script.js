@@ -50,7 +50,7 @@ let createCityButtons = function(buttons) {
 
 // get coordinates fro a searched city and pass them onto define weather API URLs function
 let getCityCoords = function() {
-    let coordRequestURL = "http://api.openweathermap.org/geo/1.0/direct?q="+ currentCitySearch +"&limit=5&appid=" + weatherKey;
+    let coordRequestURL = "https://api.openweathermap.org/geo/1.0/direct?q="+ currentCitySearch +"&limit=5&appid=" + weatherKey;
     fetch(coordRequestURL)
         .then(function (response) {
         return response.json();
@@ -63,8 +63,8 @@ let getCityCoords = function() {
 }
 // adds search parameters to API URLs and fires the relevant fetch function
 let defineWeatherURLS = function(a,b) {
-        weatherURL = "http://api.openweathermap.org/data/2.5/weather?lat="+ a + "&lon=" + b +"&units=metric&appid=" + weatherKey
-        forecastURL = "http://api.openweathermap.org/data/2.5/forecast?lat="+ a + "&lon=" + b +"&units=metric&appid=" + weatherKey
+        weatherURL = "https://api.openweathermap.org/data/2.5/weather?lat="+ a + "&lon=" + b +"&units=metric&appid=" + weatherKey
+        forecastURL = "https://api.openweathermap.org/data/2.5/forecast?lat="+ a + "&lon=" + b +"&units=metric&appid=" + weatherKey
         getCurrentWeather(weatherURL);
         getFiveDayForecast(forecastURL);
 }
